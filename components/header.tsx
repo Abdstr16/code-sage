@@ -2,12 +2,15 @@
 
 import Link from "next/link"
 import ProfileMenu from "./profile-menu"
+import { useAuth } from "@/hooks/use-auth"
 
 interface HeaderProps {
   currentPage?: string
 }
 
 export default function Header({ currentPage }: HeaderProps) {
+  const { user } = useAuth()
+
   return (
     <header className="fixed top-0 left-0 w-full z-50 bg-white shadow-lg">
       <div className="flex items-center justify-between px-4 py-4 font-bold text-xl">
@@ -40,6 +43,26 @@ export default function Header({ currentPage }: HeaderProps) {
           >
             How It Works
           </Link>
+          {user.authenticated && (
+            <Link
+              href="/dashboard"
+              className={`text-black no-underline transition-colors duration-300 hover:text-blue-800 ${
+                currentPage === "dashboard" ? "text-blue-800" : ""
+              }`}
+            >
+              Dashboard
+            </Link>
+          )}
+          {user.authenticated && (
+            <Link
+              href="/problems"
+              className={`text-black no-underline transition-colors duration-300 hover:text-blue-800 ${
+                currentPage === "problems" ? "text-blue-800" : ""
+              }`}
+            >
+              Problems
+            </Link>
+          )}
         </div>
 
         <ProfileMenu />

@@ -22,6 +22,19 @@ export interface ApiError {
   details?: any
 }
 
+export interface UserProfile {
+  username: string
+  fullname: string
+  total_submissions: number
+  solved_problems: number
+  submission_history: Array<{
+    id: number
+    problem_id: string
+    verdict: string
+    submitted_at: string
+  }>
+}
+
 class ApiClient {
   private baseUrl: string
   private accessToken: string | null = null
@@ -109,6 +122,12 @@ class ApiClient {
     return this.request<AuthResponse>("/auth/google-login", {
       method: "POST",
       body: JSON.stringify({ id_token: idToken }),
+    })
+  }
+
+  async getUserProfile(username: string): Promise<UserProfile> {
+    return this.request<UserProfile>(`/auth/profile/${username}`, {
+      method: "GET",
     })
   }
 }

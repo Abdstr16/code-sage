@@ -1,64 +1,60 @@
-"use client"
-
+import Image from "next/image"
 import Header from "@/components/header"
 import Footer from "@/components/footer"
+
+interface TeamMember {
+  name: string
+  image: string
+}
+
+const teamMembers: TeamMember[] = [
+  { name: "Ali Abdul Sater", image: "https://snapynow.com/wp-content/uploads/2024/05/no-dp_16.webp" },
+  { name: "Husein Zahweh", image: "https://snapynow.com/wp-content/uploads/2024/05/no-dp_16.webp" },
+  { name: "Rana Ezzedine", image: "https://snapynow.com/wp-content/uploads/2024/05/no-dp_16.webp" },
+  { name: "Nada Baydoun", image: "https://snapynow.com/wp-content/uploads/2024/05/no-dp_16.webp" },
+  { name: "Bahaa Mucharrafie", image: "https://snapynow.com/wp-content/uploads/2024/05/no-dp_16.webp" },
+]
 
 export default function AboutPage() {
   return (
     <div className="min-h-screen bg-background">
       <Header currentPage="about" />
 
-      <div className="pt-20 pb-10">
-        <div className="max-w-6xl mx-auto px-4">
-          <div className="text-center mb-12">
-            <h1 className="text-4xl font-bold text-gray-800 mb-4">About CodeSage</h1>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Empowering developers with AI-driven learning and personalized coding challenges
-            </p>
-          </div>
+      <div className="aboutinfo max-w-4xl mx-auto py-16 px-4">
+        <h1 className="text-4xl font-bold text-center mb-8">About CodeSage</h1>
+        <div className="space-y-6 text-lg text-gray-700 leading-relaxed">
+          <p>
+            We are a dedicated team of educators and developers passionate about helping students and aspiring
+            programmers develop the mindset and skills needed to excel in software development.
+          </p>
+          <p>
+            Our mission is to cultivate critical thinking and problem-solving abilities that go beyond syntax
+            memorization, empowering you to tackle complex programming challenges with confidence.
+          </p>
+          <p>
+            At CodeSage, we believe that becoming a great developer requires more than just writing code - it's about
+            developing an analytical approach to problem-solving that will serve you throughout your career.
+          </p>
+        </div>
+      </div>
 
-          <div className="bg-white rounded-lg shadow-lg p-8 mb-12">
-            <h2 className="text-2xl font-bold text-gray-800 mb-4">Our Mission</h2>
-            <p className="text-gray-600 text-lg leading-relaxed">
-              At CodeSage, we believe that learning to code should be an engaging, personalized experience. Our platform
-              combines the power of artificial intelligence with proven educational methodologies to create a learning
-              environment that adapts to your unique pace and style. Whether you're a beginner taking your first steps
-              into programming or an experienced developer looking to sharpen your skills, CodeSage provides the tools
-              and guidance you need to succeed.
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-8">
-            <div className="bg-white rounded-lg shadow-lg p-6 text-center">
-              <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <i className="fas fa-brain text-blue-600 text-2xl"></i>
+      <div className="ourteaminfo max-w-6xl mx-auto py-16 px-4">
+        <h2 className="text-3xl font-bold text-center mb-12">Our Team</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-8">
+          {teamMembers.map((member, index) => (
+            <div key={index} className="teammember text-center">
+              <div className="relative w-32 h-32 mx-auto mb-4">
+                <Image
+                  src={member.image || "/placeholder.svg"}
+                  alt={member.name}
+                  fill
+                  className="rounded-full object-cover"
+                  sizes="(max-width: 768px) 128px, 128px"
+                />
               </div>
-              <h3 className="text-xl font-bold text-gray-800 mb-2">AI-Powered Learning</h3>
-              <p className="text-gray-600">
-                Our advanced AI analyzes your coding patterns and provides personalized hints and feedback.
-              </p>
+              <p className="font-medium text-gray-800">{member.name}</p>
             </div>
-
-            <div className="bg-white rounded-lg shadow-lg p-6 text-center">
-              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <i className="fas fa-chart-line text-green-600 text-2xl"></i>
-              </div>
-              <h3 className="text-xl font-bold text-gray-800 mb-2">Progress Tracking</h3>
-              <p className="text-gray-600">
-                Monitor your improvement with detailed analytics and achievement milestones.
-              </p>
-            </div>
-
-            <div className="bg-white rounded-lg shadow-lg p-6 text-center">
-              <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <i className="fas fa-users text-purple-600 text-2xl"></i>
-              </div>
-              <h3 className="text-xl font-bold text-gray-800 mb-2">Community Support</h3>
-              <p className="text-gray-600">
-                Connect with fellow learners and experienced mentors in our supportive community.
-              </p>
-            </div>
-          </div>
+          ))}
         </div>
       </div>
 
