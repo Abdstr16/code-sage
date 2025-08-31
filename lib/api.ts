@@ -45,56 +45,68 @@ class ApiClient {
       headers.Authorization = `Bearer ${this.accessToken}`
     }
 
-    const response = await fetch(url, {
-      ...options,
-      headers,
-      credentials: "include", // Include cookies for refresh token
-    })
+    console.log("[v0] Making API request to:", url)
 
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}))
-      throw new Error(errorData.message || `HTTP error! status: ${response.status}`)
+    try {
+      const response = await fetch(url, {
+        ...options,
+        headers,
+        credentials: "include",
+      })
+
+      console.log("[v0] Response status:", response.status)
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}))
+        console.log("[v0] Error response:", errorData)
+        throw new Error(errorData.message || `HTTP error! status: ${response.status}`)
+      }
+
+      const data = await response.json()
+      console.log("[v0] Success response:", data)
+      return data
+    } catch (error) {
+      console.error("[v0] Fetch error:", error)
+      throw error
     }
-
-    return response.json()
   }
 
   async login(credentials: LoginRequest): Promise<AuthResponse> {
-    return this.request<AuthResponse>("/login", {
+    return this.request<AuthResponse>("/auth/login", {
       method: "POST",
       body: JSON.stringify(credentials),
     })
   }
 
   async register(userData: RegisterRequest): Promise<{ message: string }> {
-    return this.request<{ message: string }>("/register", {
+    return this.request<{ message: string }>("/auth/register", {
       method: "POST",
       body: JSON.stringify(userData),
     })
   }
 
   async refreshToken(): Promise<AuthResponse> {
-    return this.request<AuthResponse>("/refresh", {
+    return this.request<AuthResponse>("/auth/refresh", {
       method: "POST",
     })
   }
 
   async forgotPassword(email: string): Promise<{ message: string }> {
-    return this.request<{ message: string }>("/forgot-password", {
+    return this.request<{ message: string }>("/auth/forgot-password", {
       method: "POST",
       body: JSON.stringify({ email }),
     })
   }
 
   async resetPassword(token: string, newPassword: string): Promise<{ message: string }> {
-    return this.request<{ message: string }>("/reset-password", {
+    return this.request<{ message: string }>("/auth/reset-password", {
       method: "POST",
       body: JSON.stringify({ token, new_password: newPassword }),
     })
   }
 
   async googleLogin(idToken: string): Promise<AuthResponse> {
-    return this.request<AuthResponse>("/google-login", {
+    return this.request<AuthResponse>("/auth/google-login", {
       method: "POST",
       body: JSON.stringify({ id_token: idToken }),
     })
