@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Alert, AlertDescription } from "@/components/ui/alert"
 
 interface ProblemDetail {
   id: number
@@ -23,6 +24,7 @@ interface ProblemDetail {
   }>
   constraints: string[]
   starterCode: string
+  hints: string[]
 }
 
 export default function ProblemIDEPage() {
@@ -35,6 +37,8 @@ export default function ProblemIDEPage() {
   const [code, setCode] = useState("")
   const [output, setOutput] = useState("")
   const [isRunning, setIsRunning] = useState(false)
+  const [currentHintIndex, setCurrentHintIndex] = useState(-1)
+  const [showHint, setShowHint] = useState(false)
 
   useEffect(() => {
     if (!user.authenticated) {
@@ -82,6 +86,12 @@ You can return the answer in any order.`,
     """
     # Write your solution here
     pass`,
+        hints: [
+          "Think about what you need to find for each number in the array.",
+          "For each number, you need to find if its complement (target - current number) exists in the array.",
+          "Consider using a hash map to store numbers you've seen and their indices for O(1) lookup time.",
+          "As you iterate through the array, check if (target - current number) exists in your hash map.",
+        ],
       },
       "2": {
         id: 2,
@@ -117,6 +127,12 @@ def addTwoNumbers(l1, l2):
     """
     # Write your solution here
     pass`,
+        hints: [
+          "Think of this as elementary school addition, but in reverse order.",
+          "You'll need to handle the carry when the sum of two digits is >= 10.",
+          "Create a dummy head node to simplify the logic of building the result list.",
+          "Don't forget to handle the case where there's a final carry after processing both lists.",
+        ],
       },
     }
 
@@ -126,6 +142,20 @@ def addTwoNumbers(l1, l2):
       setCode(problemData.starterCode)
     }
   }, [user.authenticated, router, problemId])
+
+  const handleShowHint = () => {
+    if (problem && problem.hints.length > 0) {
+      const nextHintIndex = currentHintIndex + 1
+      if (nextHintIndex < problem.hints.length) {
+        setCurrentHintIndex(nextHintIndex)
+        setShowHint(true)
+      }
+    }
+  }
+
+  const handleCloseHint = () => {
+    setShowHint(false)
+  }
 
   const getDifficultyColor = (difficulty: string) => {
     switch (difficulty) {
@@ -177,9 +207,39 @@ def addTwoNumbers(l1, l2):
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <Card className="h-fit">
               <CardHeader>
-                <CardTitle>Problem Description</CardTitle>
+                <CardTitle className="flex items-center justify-between">
+                  Problem Description
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={handleShowHint}
+                    disabled={!problem.hints || currentHintIndex >= problem.hints.length - 1}
+                    className="text-blue-600 hover:text-blue-700"
+                  >
+                    💡 Hint {currentHintIndex >= 0 ? `(${currentHintIndex + 1}/${problem.hints?.length || 0})` : ""}
+                  </Button>
+                </CardTitle>
               </CardHeader>
               <CardContent>
+                {showHint && currentHintIndex >= 0 && problem.hints && (
+                  <Alert className="mb-4 border-blue-200 bg-blue-50">
+                    <AlertDescription className="flex items-start justify-between">
+                      <div className="flex-1">
+                        <strong className="text-blue-800">Hint {currentHintIndex + 1}:</strong>
+                        <p className="mt-1 text-blue-700">{problem.hints[currentHintIndex]}</p>
+                      </div>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={handleCloseHint}
+                        className="ml-2 h-6 w-6 p-0 text-blue-600 hover:text-blue-800"
+                      >
+                        ×
+                      </Button>
+                    </AlertDescription>
+                  </Alert>
+                )}
+
                 <Tabs defaultValue="description" className="w-full">
                   <TabsList className="grid w-full grid-cols-3">
                     <TabsTrigger value="description">Description</TabsTrigger>
